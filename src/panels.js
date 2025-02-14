@@ -1,5 +1,7 @@
 import SBOLEditorPanel from "./components/panels/sbol-editor/SBOLEditorPanel";
 import SimulatorPanel from "./components/panels/simulator/SimulatorPanel";
+import AssemblyPanel from "./components/panels/assembly-editor/AssemblyPanel";
+import BuildPanel from "./components/panels/build-editor/BuildPanel";
 import { CanvasIcon, SimulationIcon } from "./icons";
 import { ObjectTypes } from "./objectTypes";
 
@@ -25,12 +27,12 @@ export const PanelTypes = {
             const { id, fileHandle, type, ...restOfPanel } = panel
             return JSON.stringify(restOfPanel)
         }
-    }, 
+    },
     SBOLEditor: {
         id: "synbio.panel-type.sbol-editor",
         title: "SBOL Canvas",
         component: SBOLEditorPanel,
-        objectTypes: [ ObjectTypes.SBOL.id, ObjectTypes.Plasmids.id ],
+        objectTypes: [ ObjectTypes.SBOL.id ],
         icon: CanvasIcon,
 
         deserialize: content => ({
@@ -38,6 +40,20 @@ export const PanelTypes = {
         }),
 
         serialize: panel => panel.sbol
+    },
+    AssemblyPlanCreator: {
+        id: "synbio.panel-type.assembly-plan-creator",
+        title: "Assembly Plan Creator",
+        component: AssemblyPanel,
+        objectTypes: [ ObjectTypes.Assembly.id ],
+        icon: SimulationIcon,
+    },
+    BuildPlanCreator: {
+        id: "synbio.panel-type.build-plan-creator",
+        title: "Build Plan Creator",
+        component: BuildPanel,
+        objectTypes: [ ObjectTypes.Build.id ],
+        icon: SimulationIcon,
     }
 }
 

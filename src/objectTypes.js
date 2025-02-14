@@ -1,9 +1,8 @@
 import { BiWorld } from "react-icons/bi"
 import { IoAnalyticsSharp } from "react-icons/io5"
 import { TbComponents } from "react-icons/tb"
-import { GrTestDesktop } from "react-icons/gr";
-import { MdAlignVerticalTop } from "react-icons/md";
-import { VscOutput } from "react-icons/vsc";
+import { GiBackboneShell, GiBubblingFlask, GiDna1, GiProcessor, GiSewingMachine, GiVirus, GiWaterFlask } from "react-icons/gi";
+
 export const ObjectTypes = {
     SBOL: {
         id: "synbio.object-type.sbol",
@@ -14,7 +13,6 @@ export const ObjectTypes = {
         createable: true,
         extension: '.xml',
         badgeLabel: "SBOL",
-        directory: "main"
     },
     SBML: {
         id: "synbio.object-type.sbml",
@@ -23,7 +21,6 @@ export const ObjectTypes = {
         fileMatch: /<sbml/,
         createable: false,
         badgeLabel: "SBML",
-        directory: "main"
     },
     OMEX: {
         id: "synbio.object-type.omex-archive",
@@ -33,7 +30,6 @@ export const ObjectTypes = {
         icon: BiWorld,
         createable: false,
         badgeLabel: "OMEX",
-        directory: "main"
     },
     Analysis: {
         id: "synbio.object-type.analysis",
@@ -43,17 +39,22 @@ export const ObjectTypes = {
         icon: IoAnalyticsSharp,
         createable: true,
         extension: '.analysis',
-        directory: "main"
     },
-    Plasmids:{
-        id: "synbio.object-type.plasmid",
-        title: "Plasmid",
-        listTitle: "Plasmids",
+    Assembly: {
+        id: "synbio.object-type.assembly-plan",
+        title: "Assembly Plan",
+        listTitle: "Assembly Plans",
+        icon: GiSewingMachine,
         createable: true,
-        extension: '.xml',
-        icon: TbComponents,
-        directory: 'Plasmid',
-        fileNameMatch: /\.xml$/
+        extension: '.json',
+    },
+    Build: {
+        id: "synbio.object-type.build-plan",
+        title: "Build Plan",
+        listTitle: "Build Plans",
+        icon: GiProcessor,
+        createable: true,
+        extension: '.json',
     }
 }
 
@@ -61,22 +62,17 @@ export function getObjectType(id) {
     return Object.values(ObjectTypes).find(ot => ot.id == id)
 }
 
-export async function classifyFile(file, subDirectoryName) {
+export async function classifyFile(file) {
     // try to match by file name
     const matchFromFileName = Object.values(ObjectTypes).find(
         ot => ot.fileNameMatch?.test(file.name)
     )?.id
-    if (!subDirectoryName && matchFromFileName && matchFromFileName && matchFromFileName != ObjectTypes.Plasmids.id) {
-        return matchFromFileName;
-    } 
-    else if (subDirectoryName != null && subDirectoryName.toLowerCase() === "plasmid" && ObjectTypes.Plasmids.fileNameMatch?.test(file.name)) {
-        return ObjectTypes.Plasmids.id;
-    }
+    if(matchFromFileName)
+        return matchFromFileName
+
     // otherwise, read file content
-    if(subDirectoryName == null){
-        const fileContent = await (await file.getFile()).text()
-        return Object.values(ObjectTypes).find(
-            ot => ot.fileMatch?.test(fileContent)
-        )?.id
-    }
+    const fileContent = await (await file.getFile()).text()
+    return Object.values(ObjectTypes).find(
+        ot => ot.fileMatch?.test(fileContent)
+    )?.id
 }
